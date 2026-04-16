@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRK — DJ Booking</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+  /* ─── VARIABLEN ─────────────────────────────────── */
+  :root {
+    --bg:      #060606;
+    --red:     #7a0000;       /* Dunkelrot: tief, fast schwarz-rot */
+    --red-dim: rgba(122,0,0,0.18);
+    --text:    #e8e8e8;
+    --muted:   #444;
+    --border:  rgba(255,255,255,0.07);
+    --font-d:  'Bebas Neue', sans-serif;
+    --font-b:  'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-b);
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ───────────────────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.4rem 3rem;
+    /* LERNHINWEIS: mix-blend-mode auf Kindelementen erlaubt später interessante Überlagerungseffekte */
+  }
+
+  .logo {
+    font-family: var(--font-d);
+    font-size: 2rem;
+    letter-spacing: 0.15em;
+    color: #fff;
+  }
+
+  .logo span { color: var(--red); }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: #fff; }
+
+  /* ─── HERO MIT VIDEO ────────────────────────────── */
+  /* LERNHINWEIS: position:relative auf dem Container + position:absolute auf dem Video
+     halten das Video im Hintergrund, ohne den normalen Dokumentfluss zu stören */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 3rem 5rem;
+    overflow: hidden;
+  }
+
+  /* Video-Container hält das YouTube-iframe im Hintergrund */
+  .video-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    /* Foto als Hintergrund: schwarz-weiss, stark abgedunkelt */
+    background-image: url('Burak_Ates_Street.jpg');
+    background-size: cover;
+    background-position: center top;
+    /* grayscale + dunkel für Underground-Feeling */
+    filter: grayscale(100%) brightness(0.28) contrast(1.15);
+  }
+
+  /* Rotes Gradient-Overlay über dem Video */
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      linear-gradient(to top, rgba(6,6,6,0.95) 0%, rgba(6,6,6,0.3) 50%, rgba(6,6,6,0.6) 100%),
+      linear-gradient(135deg, var(--red-dim) 0%, transparent 60%);
+  }
+
+  /* Körnung / Noise-Textur als CSS — gibt Underground-Feeling */
+  .hero-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* SVG-Noise inline als Data-URI */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* Alle Texte im Hero müssen z-index: 2 haben um über dem Video zu sein */
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 400;
+    margin-bottom: 0.8rem;
+    animation: fadeUp 1s 0.2s ease both;
+  }
+
+  h1 {
+    font-family: var(--font-d);
+    font-size: clamp(4.5rem, 18vw, 16rem);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    animation: fadeUp 1s 0.3s ease both;
+    margin-bottom: 0.15em;
+    /* LERNHINWEIS: display:inline-block auf h1 damit die Kinder nebeneinander bleiben */
+  }
+
+  /* .line2 als inline — kein display:block, damit 'M neben WILLY steht */
+  h1 .line2 {
+    display: inline;
+    color: var(--red);
+  }
+
+  /* Städte-Zeile mit Verbindungspunkten */
+  .cities {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    animation: fadeUp 1s 0.4s ease both;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+
+  .city { color: #888; }
+  .city.active { color: var(--red); }
+
+  /* Verbindungslinie zwischen Städten */
+  .city-line {
+    width: 2rem;
+    height: 1px;
+    background: linear-gradient(to right, var(--red), var(--muted));
+    margin: 0 0.6rem;
+    flex-shrink: 0;
+  }
+
+  .hero-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 2rem;
+    animation: fadeUp 1s 0.5s ease both;
+  }
+
+  .hero-desc {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.9;
+    max-width: 320px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .hero-tagline {
+    font-family: var(--font-b);
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 1.8rem;
+    animation: fadeUp 1s 0.38s ease both;
+    border-left: 2px solid var(--red);
+    padding-left: 1rem;
+  }
+
+  .cta-group {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.85rem 2rem;
+    font-family: var(--font-b);
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn:active { transform: scale(0.97); }
+
+  .btn-primary {
+    background: var(--red);
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: #e8000b; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--muted);
+  }
+
+  .btn-secondary:hover { border-color: var(--red); color: var(--red); }
+
+  /* ─── ROTER STRICH TRENNER ──────────────────────── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, var(--red), transparent);
+    margin: 0;
+  }
+
+  /* ─── TICKER ────────────────────────────────────── */
+  .ticker {
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0.9rem 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ticker-inner {
+    display: inline-block;
+    animation: ticker 25s linear infinite;
+    font-family: var(--font-d);
+    font-size: 0.9rem;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+  }
+
+  .ticker-inner .sep { color: var(--red); margin: 0 1.2rem; }
+
+  /* ─── SECTIONS ALLGEMEIN ────────────────────────── */
+  section {
+    padding: 6rem 3rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 400;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── SOUNDCLOUD KOMPAKT ────────────────────────── */
+  .sound-section {
+    background: #080808;
+  }
+
+  .sound-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .sound-title {
+    font-family: var(--font-d);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1;
+    letter-spacing: 0.05em;
+  }
+
+  .sound-title span { color: var(--red); }
+
+  .sound-meta {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  /* Kompakter SC Player */
+  .sc-player {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: #0e0e0e;
+    border: 1px solid #1c1c1c;
+    border-left: 2px solid var(--red);
+    padding: 1.2rem 1.8rem;
+    max-width: 560px;
+  }
+
+  /* Play/Pause Button */
+  .sc-play-btn {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #2a2a2a;
+    background: #111;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.2s, background 0.2s;
+    font-size: 0.9rem;
+  }
+
+  .sc-play-btn:hover { border-color: var(--red); background: #1a0000; }
+
+  /* Prev / Next Buttons */
+  .sc-skip-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: color 0.2s;
+    font-size: 0.75rem;
+  }
+
+  .sc-skip-btn:hover { color: var(--text); }
+
+  /* Track Info */
+  .sc-info {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .sc-track-name {
+    font-size: 0.78rem;
+    color: var(--text);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.2rem;
+  }
+
+  .sc-artist {
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* Fortschrittsbalken */
+  .sc-progress {
+    width: 100%;
+    height: 2px;
+    background: #1c1c1c;
+    margin-top: 0.8rem;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .sc-progress-fill {
+    height: 100%;
+    background: var(--red);
+    width: 0%;
+    transition: width 0.5s linear;
+  }
+
+  /* Link zu SoundCloud */
+  .sc-link {
+    font-size: 0.58rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: color 0.2s;
+    border: 1px solid #1c1c1c;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .sc-link:hover { color: var(--red); border-color: var(--red); }
+
+  /* Verstecktes SC iframe für Widget API */
+  .sc-iframe-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ─── GENRES ────────────────────────────────────── */
+  .genre-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .genre-item {
+    background: var(--bg);
+    padding: 2.5rem 2rem;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Roter Akzent-Strich oben beim Hover */
+  .genre-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--red);
+    transition: width 0.3s ease;
+  }
+
+  .genre-item:hover::before { width: 100%; }
+  .genre-item:hover { background: #0e0e0e; }
+
+  .genre-num {
+    font-size: 0.55rem;
+    color: var(--red);
+    letter-spacing: 0.3em;
+    margin-bottom: 1rem;
+  }
+
+  .genre-item h3 {
+    font-family: var(--font-d);
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+
+  .genre-item p {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* ─── BOOKING FORM ──────────────────────────────── */
+  .booking-section { background: #070707; }
+
+  .booking-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .booking-info h2 {
+    font-family: var(--font-d);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  .booking-info h2 span { color: var(--red); }
+
+  .booking-info p {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 2.5rem;
+  }
+
+  .contact-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .contact-list li {
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .contact-list li span:first-child {
+    color: var(--red);
+    text-transform: uppercase;
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    min-width: 3rem;
+  }
+
+  .booking-form { display: flex; flex-direction: column; gap: 0.8rem; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  label {
+    font-size: 0.58rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  input, select, textarea {
+    background: #0e0e0e;
+    border: 1px solid #1c1c1c;
+    border-bottom: 1px solid #2a2a2a;
+    color: var(--text);
+    font-family: var(--font-b);
+    font-size: 0.8rem;
+    padding: 0.85rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--red);
+    background: #0f0f0f;
+  }
+
+  textarea { resize: vertical; min-height: 110px; }
+  select option { background: #111; }
+
+  .btn-submit {
+    margin-top: 0.5rem;
+    align-self: flex-start;
+  }
+
+  /* ─── FOOTER ────────────────────────────────────── */
+  footer {
+    padding: 2.5rem 3rem;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .footer-logo {
+    font-family: var(--font-d);
+    font-size: 1.5rem;
+    color: #fff;
+    letter-spacing: 0.1em;
+  }
+
+  .footer-logo span { color: var(--red); }
+
+  .footer-cities {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    justify-content: center;
+    font-size: 0.58rem;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+    flex-wrap: wrap;
+  }
+
+  .footer-cities .dot {
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+
+  .footer-right {
+    font-size: 0.6rem;
+    color: var(--muted);
+    text-align: right;
+    letter-spacing: 0.1em;
+  }
+
+  /* ─── ANIMATIONEN ───────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ─── RESPONSIVE ────────────────────────────────── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { display: none; }
+    .hero { padding: 0 1.5rem 4rem; }
+    section { padding: 4rem 1.5rem; }
+    .booking-inner { grid-template-columns: 1fr; gap: 3rem; }
+    footer { grid-template-columns: 1fr; text-align: center; }
+    .footer-cities { justify-content: center; }
+    .footer-right { text-align: center; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">BR<span>K</span></div>
+  <ul>
+    <li><a href="#sound">Sound</a></li>
+    <li><a href="#booking">Booking</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<!-- Das Video läuft stumm im Hintergrund, der Text liegt darüber -->
+<section class="hero" id="hero">
+
+  <!-- Foto-Hintergrund: schwarz-weiss behandelt per CSS -->
+  <div class="video-bg" aria-hidden="true"></div>
+
+  <!-- Roter + Dunkel Overlay über dem Video -->
+  <div class="hero-overlay" aria-hidden="true"></div>
+
+  <!-- Inhalt über dem Video -->
+  <div class="hero-content">
+    <p class="hero-tag">Underground Electronic Music</p>
+
+    <h1>
+      WILLY
+      <span class="line2">'M</span>
+    </h1>
+
+    <p class="hero-tagline">Underground mit Bewusstsein.</p>
+
+    <!-- Städte verbunden mit Linien -->
+    <div class="cities">
+      <span class="city active">Solothurn</span>
+      <div class="city-line"></div>
+      <span class="city">Zürich</span>
+      <div class="city-line"></div>
+      <span class="city">Istanbul</span>
+      <div class="city-line"></div>
+      <span class="city">Berlin</span>
+    </div>
+
+    <div class="hero-bottom">
+      <p class="hero-desc">Underground Minimal</p>
+      <div class="cta-group">
+        <a href="#booking" class="btn btn-primary">Booking anfragen</a>
+        <a href="#sound" class="btn btn-secondary">Sound hören</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <span class="ticker-inner">
+    ZWISCHEN DUNKELHEIT UND FREQUENZ <span class="sep">///</span>
+    KEINE REGELN <span class="sep">///</span>
+    KEIN MAINSTREAM <span class="sep">///</span>
+    NUR DAS, WAS BLEIBT <span class="sep">///</span>
+    ZWISCHEN DUNKELHEIT UND FREQUENZ <span class="sep">///</span>
+    KEINE REGELN <span class="sep">///</span>
+    KEIN MAINSTREAM <span class="sep">///</span>
+    NUR DAS, WAS BLEIBT <span class="sep">///</span>
+  </span>
+</div>
+
+<!-- SOUNDCLOUD -->
+<section class="sound-section" id="sound">
+  <p class="section-label">Sound / Mixes</p>
+
+  <div class="sound-header">
+    <div>
+      <h2 class="sound-title">WILLY<span>'M</span></h2>
+      <p style="font-size:0.62rem; color:var(--muted); letter-spacing:0.25em; text-transform:uppercase; margin-top:0.5rem;">Playlist · SoundCloud</p>
+    </div>
+    <p class="sound-meta">Underground Minimal</p>
+  </div>
+
+  <!-- LERNHINWEIS: Das iframe ist unsichtbar (1px gross, opacity:0).
+       Die SoundCloud Widget API braucht ein echtes iframe zum Laden,
+       aber wir steuern es mit JavaScript und zeigen unsere eigene UI. -->
+  <iframe
+    id="sc-iframe"
+    class="sc-iframe-hidden"
+    allow="autoplay"
+    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1999619268&auto_play=false">
+  </iframe>
+
+  <!-- Unser eigener kompakter Player -->
+  <div class="sc-player">
+
+    <!-- Zurück-Button -->
+    <button class="sc-skip-btn" id="sc-prev" title="Vorheriger Track" aria-label="Vorheriger Track">
+      &#9664;&#9664;
+    </button>
+
+    <!-- Play/Pause Button -->
+    <button class="sc-play-btn" id="sc-play" title="Play / Pause" aria-label="Play / Pause">
+      &#9654;
+    </button>
+
+    <!-- Vor-Button -->
+    <button class="sc-skip-btn" id="sc-next" title="Nächster Track" aria-label="Nächster Track">
+      &#9654;&#9654;
+    </button>
+
+    <!-- Track Info -->
+    <div class="sc-info">
+      <div class="sc-track-name" id="sc-title">Lädt...</div>
+      <div class="sc-artist">WILLY'M</div>
+      <!-- Fortschrittsbalken -->
+      <div class="sc-progress">
+        <div class="sc-progress-fill" id="sc-bar"></div>
+      </div>
+    </div>
+
+    <!-- Link zu SoundCloud -->
+    <a href="https://soundcloud.com/burak-ates-1/sets/willym"
+       target="_blank"
+       rel="noopener"
+       class="sc-link">SC ↗</a>
+  </div>
+</section>
+
+<!-- BOOKING FORM -->
+<section id="booking" class="booking-section">
+  <p class="section-label">Booking anfragen</p>
+
+  <div class="booking-inner">
+    <!-- Linke Seite: Info -->
+    <div class="booking-info">
+      <h2>LASS UNS<br><span>REDEN.</span></h2>
+      <p>
+        Sound zwischen Schatten und Licht.<br>
+        Roh. Tief. Unberechenbar.<br>
+        Nicht für alle. Nur für die, die bleiben.
+      </p>
+      <ul class="contact-list">
+        <li>
+          <span>Mail</span>
+          <span>booking@brk-dj.com</span>
+        </li>
+        <li>
+          <span>SC</span>
+          <a href="https://soundcloud.com/burak-ates-1" target="_blank" rel="noopener" style="color: var(--muted); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'">soundcloud.com/burak-ates-1</a>
+        </li>
+        <li>
+          <span>IG</span>
+          <a href="https://www.instagram.com/willym.so/" target="_blank" rel="noopener" style="color: var(--muted); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'">instagram.com/willym.so</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Rechte Seite: Formular -->
+    <form class="booking-form" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <div class="field">
+          <label for="name">Name / Promoter</label>
+          <input type="text" id="name" name="name" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="email">E-Mail</label>
+          <input type="email" id="email" name="email" required autocomplete="email">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="date">Datum</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+        <div class="field">
+          <label for="type">Art des Events</label>
+          <select id="type" name="type" required>
+            <option value="" disabled selected>Wählen</option>
+            <option>Club Night</option>
+            <option>Festival</option>
+            <option>Private Event</option>
+            <option>Open Air</option>
+            <option>Residency</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="location">Location / Stadt</label>
+        <input type="text" id="location" name="location" placeholder="z.B. Berlin, Zürich, Istanbul">
+      </div>
+      <div class="field">
+        <label for="message">Weitere Infos</label>
+        <textarea id="message" name="message" placeholder=""></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-submit">Anfrage senden</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">BR<span>K</span></div>
+  <div class="footer-cities">
+    <span>Solothurn</span>
+    <div class="dot"></div>
+    <span>Zürich</span>
+    <div class="dot"></div>
+    <span>Istanbul</span>
+    <div class="dot"></div>
+    <span>Berlin</span>
+  </div>
+  <div class="footer-right">
+    <div>© 2026</div>
+    <div style="color:#2a2a2a; margin-top:0.3rem;">Available Worldwide</div>
+  </div>
+</footer>
+
+<script src="https://w.soundcloud.com/player/api.js"></script>
+<script>
+  // ─── SOUNDCLOUD WIDGET API ───────────────────────────
+  // LERNHINWEIS: SC.Widget() verbindet uns mit dem versteckten iframe.
+  // Danach können wir play(), pause(), next(), prev() aufrufen
+  // und Events wie PLAY, PAUSE, FINISH abhören.
+
+  const iframe  = document.getElementById('sc-iframe');
+  const widget  = SC.Widget(iframe);
+
+  const playBtn = document.getElementById('sc-play');
+  const prevBtn = document.getElementById('sc-prev');
+  const nextBtn = document.getElementById('sc-next');
+  const titleEl = document.getElementById('sc-title');
+  const barEl   = document.getElementById('sc-bar');
+
+  let isPlaying = false;
+
+  // Wenn der Player bereit ist: ersten Track-Namen holen
+  widget.bind(SC.Widget.Events.READY, () => {
+    widget.getCurrentSound(sound => {
+      if (sound) titleEl.textContent = sound.title;
+    });
+  });
+
+  // Play/Pause Button
+  playBtn.addEventListener('click', () => {
+    widget.toggle(); // toggle() wechselt zwischen play und pause
+  });
+
+  // Nächster Track
+  nextBtn.addEventListener('click', () => { widget.next(); });
+
+  // Vorheriger Track
+  prevBtn.addEventListener('click', () => { widget.prev(); });
+
+  // Icon wechseln wenn Musik läuft
+  widget.bind(SC.Widget.Events.PLAY, () => {
+    isPlaying = true;
+    playBtn.innerHTML = '&#9646;&#9646;'; // Pause-Symbol
+    // Track-Name aktualisieren
+    widget.getCurrentSound(sound => {
+      if (sound) titleEl.textContent = sound.title;
+    });
+  });
+
+  widget.bind(SC.Widget.Events.PAUSE, () => {
+    isPlaying = false;
+    playBtn.innerHTML = '&#9654;'; // Play-Symbol
+  });
+
+  widget.bind(SC.Widget.Events.FINISH, () => {
+    isPlaying = false;
+    playBtn.innerHTML = '&#9654;';
+    barEl.style.width = '0%';
+  });
+
+  // Fortschrittsbalken aktualisieren
+  // LERNHINWEIS: PLAY_PROGRESS wird laufend gefeuert, gibt position und duration in ms
+  widget.bind(SC.Widget.Events.PLAY_PROGRESS, (e) => {
+    const pct = (e.currentPosition / e.relativePosition) * e.relativePosition;
+    // Einfachere Berechnung: relativePosition ist bereits 0–1
+    barEl.style.width = (e.relativePosition * 100) + '%';
+  });
+
+  // ─── FORMULAR ────────────────────────────────────────
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = 'Gesendet ✓';
+    btn.style.background = '#1a1a1a';
+    btn.style.color = '#888';
+    btn.disabled = true;
+  }
+
+  // Smooth Scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
