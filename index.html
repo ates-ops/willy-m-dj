@@ -12,8 +12,8 @@
     --bg:      #060606;
     --red:     #7a0000;       /* Dunkelrot: tief, fast schwarz-rot */
     --red-dim: rgba(122,0,0,0.18);
-    --text:    #e8e8e8;
-    --muted:   #444;
+    --text:    #ffffff;
+    --muted:   #aaaaaa;
     --border:  rgba(255,255,255,0.07);
     --font-d:  'Bebas Neue', sans-serif;
     --font-b:  'DM Mono', monospace;
@@ -94,12 +94,10 @@
     z-index: 0;
     pointer-events: none;
     overflow: hidden;
-    /* Foto als Hintergrund: schwarz-weiss, stark abgedunkelt */
     background-image: url('Burak_Ates_Street.jpg');
     background-size: cover;
-    background-position: center top;
-    /* grayscale + dunkel für Underground-Feeling */
-    filter: grayscale(100%) brightness(0.28) contrast(1.15);
+    background-position: center 20%;  /* weiter oben = mehr vom Körper sichtbar */
+    filter: grayscale(100%) brightness(0.55) contrast(1.25);
   }
 
   /* Rotes Gradient-Overlay über dem Video */
@@ -108,7 +106,7 @@
     inset: 0;
     z-index: 1;
     background:
-      linear-gradient(to top, rgba(6,6,6,0.95) 0%, rgba(6,6,6,0.3) 50%, rgba(6,6,6,0.6) 100%),
+      linear-gradient(to top, rgba(6,6,6,0.97) 0%, rgba(6,6,6,0.4) 40%, rgba(6,6,6,0.15) 100%),
       linear-gradient(135deg, var(--red-dim) 0%, transparent 60%);
   }
 
@@ -343,105 +341,273 @@
     padding: 1.2rem 1.8rem;
     max-width: 560px;
   }
+  .sc-play-btn { display:none; }
+  .sc-skip-btn { display:none; }
+  .sc-info { display:none; }
+  .sc-link { display:none; }
+  .sc-iframe-hidden { display:none; }
+  .sc-progress { display:none; }
+  .sc-progress-fill { display:none; }
+  .sc-track-name { display:none; }
+  .sc-artist { display:none; }
 
-  /* Play/Pause Button */
-  .sc-play-btn {
-    width: 42px;
-    height: 42px;
-    border: 1px solid #2a2a2a;
-    background: #111;
-    color: var(--text);
-    cursor: pointer;
+  /* ─── PLATTENSPIELER ────────────────────────────── */
+  .turntable-wrap {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: border-color 0.2s, background 0.2s;
-    font-size: 0.9rem;
+    gap: 3rem;
+    flex-wrap: wrap;
   }
 
-  .sc-play-btn:hover { border-color: var(--red); background: #1a0000; }
-
-  /* Prev / Next Buttons */
-  .sc-skip-btn {
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: color 0.2s;
-    font-size: 0.75rem;
-  }
-
-  .sc-skip-btn:hover { color: var(--text); }
-
-  /* Track Info */
-  .sc-info {
-    flex: 1;
-    overflow: hidden;
-  }
-
-  .sc-track-name {
-    font-size: 0.78rem;
-    color: var(--text);
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 0.2rem;
-  }
-
-  .sc-artist {
-    font-size: 0.6rem;
-    color: var(--muted);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-
-  /* Fortschrittsbalken */
-  .sc-progress {
-    width: 100%;
-    height: 2px;
-    background: #1c1c1c;
-    margin-top: 0.8rem;
+  /* Gerät: dunkle Metallplatte */
+  .turntable {
     position: relative;
-    cursor: pointer;
+    width: 320px;
+    height: 320px;
+    background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.04);
+    flex-shrink: 0;
   }
 
-  .sc-progress-fill {
-    height: 100%;
-    background: var(--red);
-    width: 0%;
-    transition: width 0.5s linear;
+  /* Platter (drehende Scheibe) */
+  .platter {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 240px; height: 240px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #111;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.9), inset 0 0 0 2px #222;
+    animation: spin 2.4s linear infinite;
+    animation-play-state: paused; /* startet gestoppt */
   }
 
-  /* Link zu SoundCloud */
-  .sc-link {
+  .platter.playing { animation-play-state: running; }
+
+  @keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  /* Billardkugel 8 als SVG-Hintergrund */
+  .platter-inner {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    /* Rillen wie eine echte Vinyl */
+    background:
+      repeating-radial-gradient(
+        circle at center,
+        transparent 20px,
+        rgba(255,255,255,0.015) 21px,
+        transparent 22px
+      ),
+      radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 8-Ball Label in der Mitte */
+  .ball-label {
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #3a3a3a, #000 70%);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.9), inset 0 1px 3px rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .ball-label::before {
+    content: '';
+    position: absolute;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .ball-label .eight {
+    position: relative;
+    z-index: 1;
+    font-family: Arial Black, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #000;
+    line-height: 1;
+  }
+
+  /* Tonarm (Technics-Style) */
+  .tonearm {
+    position: absolute;
+    top: 18px; right: 22px;
+    width: 110px; height: 110px;
+    transform-origin: top right;
+    transition: transform 0.8s ease;
+  }
+
+  .tonearm-body {
+    position: absolute;
+    top: 0; right: 0;
+    width: 8px; height: 90px;
+    background: linear-gradient(to bottom, #555, #333);
+    border-radius: 4px;
+    transform-origin: top center;
+    transform: rotate(-20deg);
+  }
+
+  .tonearm-head {
+    position: absolute;
+    bottom: -6px; left: -8px;
+    width: 16px; height: 10px;
+    background: #444;
+    border-radius: 2px;
+  }
+
+  .tonearm-pivot {
+    position: absolute;
+    top: -5px; right: -5px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #777, #333);
+    border: 1px solid #555;
+  }
+
+  /* Steuerung rechts vom Plattenspieler */
+  .tt-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-width: 160px;
+  }
+
+  /* Track-Info */
+  .tt-track {
+    border-left: 2px solid var(--red);
+    padding-left: 1rem;
+  }
+
+  .tt-track-name {
+    font-size: 0.72rem;
+    color: var(--text);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+    line-height: 1.4;
+  }
+
+  .tt-artist {
     font-size: 0.58rem;
     color: var(--muted);
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    text-decoration: none;
-    flex-shrink: 0;
-    transition: color 0.2s;
-    border: 1px solid #1c1c1c;
-    padding: 0.5rem 0.8rem;
   }
 
-  .sc-link:hover { color: var(--red); border-color: var(--red); }
+  /* Prev / Next Buttons */
+  .tt-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
 
-  /* Verstecktes SC iframe für Widget API */
-  .sc-iframe-hidden {
+  .tt-btn {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    color: var(--muted);
+    width: 40px; height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .tt-btn:hover { border-color: var(--red); color: #fff; }
+
+  .tt-play-btn {
+    width: 48px; height: 48px;
+    background: var(--red);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: background 0.2s;
+  }
+
+  .tt-play-btn:hover { background: #9a0000; }
+
+  /* Lautstärkehebel (Technics-Fader) */
+  .tt-fader-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .tt-fader-label {
+    font-size: 0.55rem;
+    color: var(--muted);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+
+  .tt-fader-track {
+    position: relative;
+    width: 8px;
+    height: 120px;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 4px;
+    margin: 0 auto;
+    cursor: pointer;
+  }
+
+  /* Markierungen am Fader */
+  .tt-fader-track::before {
+    content: '';
     position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    pointer-events: none;
+    left: -6px; top: 10%;
+    width: 4px; height: 80%;
+    background: repeating-linear-gradient(
+      to bottom,
+      #2a2a2a 0px, #2a2a2a 1px,
+      transparent 1px, transparent 8px
+    );
+  }
+
+  .tt-fader-knob {
+    position: absolute;
+    left: 50%;
+    top: 20%; /* startet bei 80% Lautstärke */
+    transform: translate(-50%, -50%);
+    width: 24px; height: 14px;
+    background: linear-gradient(to bottom, #666, #333);
+    border: 1px solid #555;
+    border-radius: 2px;
+    cursor: grab;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+  }
+
+  .tt-fader-knob::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px; height: 1px;
+    background: #888;
+  }
+
+  /* SC iframe versteckt aber aktiv */
+  .sc-hidden-embed {
+    position: absolute;
+    width: 1px; height: 1px;
+    opacity: 0; pointer-events: none;
   }
 
   /* ─── GENRES ────────────────────────────────────── */
@@ -746,49 +912,57 @@
     <p class="sound-meta">Underground Minimal</p>
   </div>
 
-  <!-- LERNHINWEIS: Das iframe ist unsichtbar (1px gross, opacity:0).
-       Die SoundCloud Widget API braucht ein echtes iframe zum Laden,
-       aber wir steuern es mit JavaScript und zeigen unsere eigene UI. -->
-  <iframe
-    id="sc-iframe"
-    class="sc-iframe-hidden"
-    allow="autoplay"
-    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1999619268&auto_play=false">
+  <!-- Verstecktes iframe für SoundCloud Widget API -->
+  <iframe id="sc-iframe" class="sc-hidden-embed" allow="autoplay"
+    src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/burak-ates-1/sets/willym&auto_play=false">
   </iframe>
 
-  <!-- Unser eigener kompakter Player -->
-  <div class="sc-player">
+  <div class="turntable-wrap">
 
-    <!-- Zurück-Button -->
-    <button class="sc-skip-btn" id="sc-prev" title="Vorheriger Track" aria-label="Vorheriger Track">
-      &#9664;&#9664;
-    </button>
-
-    <!-- Play/Pause Button -->
-    <button class="sc-play-btn" id="sc-play" title="Play / Pause" aria-label="Play / Pause">
-      &#9654;
-    </button>
-
-    <!-- Vor-Button -->
-    <button class="sc-skip-btn" id="sc-next" title="Nächster Track" aria-label="Nächster Track">
-      &#9654;&#9654;
-    </button>
-
-    <!-- Track Info -->
-    <div class="sc-info">
-      <div class="sc-track-name" id="sc-title">Lädt...</div>
-      <div class="sc-artist">WILLY'M</div>
-      <!-- Fortschrittsbalken -->
-      <div class="sc-progress">
-        <div class="sc-progress-fill" id="sc-bar"></div>
+    <!-- PLATTENSPIELER -->
+    <div class="turntable">
+      <!-- Drehende Platte mit 8-Ball -->
+      <div class="platter" id="platter">
+        <div class="platter-inner">
+          <div class="ball-label">
+            <span class="eight">8</span>
+          </div>
+        </div>
+      </div>
+      <!-- Tonarm -->
+      <div class="tonearm" id="tonearm">
+        <div class="tonearm-body">
+          <div class="tonearm-head"></div>
+        </div>
+        <div class="tonearm-pivot"></div>
       </div>
     </div>
 
-    <!-- Link zu SoundCloud -->
-    <a href="https://soundcloud.com/burak-ates-1/sets/willym"
-       target="_blank"
-       rel="noopener"
-       class="sc-link">SC ↗</a>
+    <!-- STEUERUNG -->
+    <div class="tt-controls">
+
+      <!-- Track Info -->
+      <div class="tt-track">
+        <div class="tt-track-name" id="tt-title">Bereit...</div>
+        <div class="tt-artist">WILLY'M · SoundCloud</div>
+      </div>
+
+      <!-- Prev / Play / Next -->
+      <div class="tt-nav">
+        <button class="tt-btn" id="tt-prev" title="Vorheriger Track">&#9664;</button>
+        <button class="tt-play-btn" id="tt-play" title="Play / Pause">&#9654;</button>
+        <button class="tt-btn" id="tt-next" title="Nächster Track">&#9654;&#9654;</button>
+      </div>
+
+      <!-- Lautstärke-Fader -->
+      <div class="tt-fader-wrap">
+        <span class="tt-fader-label">Volume</span>
+        <div class="tt-fader-track" id="fader-track">
+          <div class="tt-fader-knob" id="fader-knob"></div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
@@ -883,70 +1057,104 @@
 
 <script src="https://w.soundcloud.com/player/api.js"></script>
 <script>
-  // ─── SOUNDCLOUD WIDGET API ───────────────────────────
-  // LERNHINWEIS: SC.Widget() verbindet uns mit dem versteckten iframe.
-  // Danach können wir play(), pause(), next(), prev() aufrufen
-  // und Events wie PLAY, PAUSE, FINISH abhören.
+  // ─── PLATTENSPIELER STEUERUNG ─────────────────────
+  const platter  = document.getElementById('platter');
+  const ttPlay   = document.getElementById('tt-play');
+  const ttPrev   = document.getElementById('tt-prev');
+  const ttNext   = document.getElementById('tt-next');
+  const ttTitle  = document.getElementById('tt-title');
+  const faderTrack = document.getElementById('fader-track');
+  const faderKnob  = document.getElementById('fader-knob');
 
-  const iframe  = document.getElementById('sc-iframe');
-  const widget  = SC.Widget(iframe);
-
-  const playBtn = document.getElementById('sc-play');
-  const prevBtn = document.getElementById('sc-prev');
-  const nextBtn = document.getElementById('sc-next');
-  const titleEl = document.getElementById('sc-title');
-  const barEl   = document.getElementById('sc-bar');
+  // SoundCloud Widget verbinden
+  const scIframe = document.getElementById('sc-iframe');
+  const widget   = SC.Widget(scIframe);
 
   let isPlaying = false;
+  let volume = 80; // 0-100
 
-  // Wenn der Player bereit ist: ersten Track-Namen holen
+  // Fader-Position setzen (top 0% = laut, top 90% = leise)
+  function setFaderVisual(vol) {
+    // vol 0-100, knob top: 90% wenn vol=0, 5% wenn vol=100
+    const topPct = 90 - (vol * 0.85);
+    faderKnob.style.top = topPct + '%';
+  }
+  setFaderVisual(volume);
+
+  // Widget bereit
   widget.bind(SC.Widget.Events.READY, () => {
-    widget.getCurrentSound(sound => {
-      if (sound) titleEl.textContent = sound.title;
+    widget.setVolume(volume);
+    widget.getCurrentSound(s => {
+      if (s) ttTitle.textContent = s.title;
     });
   });
 
-  // Play/Pause Button
-  playBtn.addEventListener('click', () => {
-    widget.toggle(); // toggle() wechselt zwischen play und pause
-  });
+  // Play/Pause
+  ttPlay.addEventListener('click', () => { widget.toggle(); });
 
-  // Nächster Track
-  nextBtn.addEventListener('click', () => { widget.next(); });
-
-  // Vorheriger Track
-  prevBtn.addEventListener('click', () => { widget.prev(); });
-
-  // Icon wechseln wenn Musik läuft
   widget.bind(SC.Widget.Events.PLAY, () => {
     isPlaying = true;
-    playBtn.innerHTML = '&#9646;&#9646;'; // Pause-Symbol
-    // Track-Name aktualisieren
-    widget.getCurrentSound(sound => {
-      if (sound) titleEl.textContent = sound.title;
-    });
+    platter.classList.add('playing');
+    ttPlay.innerHTML = '&#9646;&#9646;';
+    widget.getCurrentSound(s => { if (s) ttTitle.textContent = s.title; });
   });
 
   widget.bind(SC.Widget.Events.PAUSE, () => {
     isPlaying = false;
-    playBtn.innerHTML = '&#9654;'; // Play-Symbol
+    platter.classList.remove('playing');
+    ttPlay.innerHTML = '&#9654;';
   });
 
   widget.bind(SC.Widget.Events.FINISH, () => {
     isPlaying = false;
-    playBtn.innerHTML = '&#9654;';
-    barEl.style.width = '0%';
+    platter.classList.remove('playing');
+    ttPlay.innerHTML = '&#9654;';
   });
 
-  // Fortschrittsbalken aktualisieren
-  // LERNHINWEIS: PLAY_PROGRESS wird laufend gefeuert, gibt position und duration in ms
-  widget.bind(SC.Widget.Events.PLAY_PROGRESS, (e) => {
-    const pct = (e.currentPosition / e.relativePosition) * e.relativePosition;
-    // Einfachere Berechnung: relativePosition ist bereits 0–1
-    barEl.style.width = (e.relativePosition * 100) + '%';
+  // Prev / Next
+  ttNext.addEventListener('click', () => { widget.next(); });
+  ttPrev.addEventListener('click', () => { widget.prev(); });
+
+  // Track-Wechsel
+  widget.bind(SC.Widget.Events.PLAY_PROGRESS, () => {
+    widget.getCurrentSound(s => { if (s) ttTitle.textContent = s.title; });
   });
 
-  // ─── FORMULAR ────────────────────────────────────────
+  // ─── LAUTSTÄRKE FADER ─────────────────────────────
+  // LERNHINWEIS: mousedown startet das Ziehen, mousemove berechnet Position,
+  // mouseup beendet es. Das nennt man "Drag and Drop" ohne externe Library.
+  let dragging = false;
+
+  faderKnob.addEventListener('mousedown', (e) => {
+    dragging = true;
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    const rect = faderTrack.getBoundingClientRect();
+    let y = e.clientY - rect.top;
+    y = Math.max(0, Math.min(rect.height, y));
+    // Umrechnen: y=0 (oben) = vol 100, y=height (unten) = vol 0
+    volume = Math.round(100 - (y / rect.height * 100));
+    setFaderVisual(volume);
+    widget.setVolume(volume);
+  });
+
+  document.addEventListener('mouseup', () => { dragging = false; });
+
+  // Touch-Support für Mobile
+  faderKnob.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const rect = faderTrack.getBoundingClientRect();
+    let y = e.touches[0].clientY - rect.top;
+    y = Math.max(0, Math.min(rect.height, y));
+    volume = Math.round(100 - (y / rect.height * 100));
+    setFaderVisual(volume);
+    widget.setVolume(volume);
+  }, { passive: false });
+
+  // ─── FORMULAR ─────────────────────────────────────
   function handleSubmit(e) {
     e.preventDefault();
     const btn = e.target.querySelector('button[type="submit"]');
