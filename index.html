@@ -12,8 +12,8 @@
     --bg:      #060606;
     --red:     #7a0000;       /* Dunkelrot: tief, fast schwarz-rot */
     --red-dim: rgba(122,0,0,0.18);
-    --text:    #e8e8e8;
-    --muted:   #444;
+    --text:    #ffffff;
+    --muted:   #cccccc;
     --border:  rgba(255,255,255,0.07);
     --font-d:  'Bebas Neue', sans-serif;
     --font-b:  'DM Mono', monospace;
@@ -94,12 +94,10 @@
     z-index: 0;
     pointer-events: none;
     overflow: hidden;
-    /* Foto als Hintergrund: schwarz-weiss, stark abgedunkelt */
     background-image: url('Burak_Ates_Street.jpg');
     background-size: cover;
-    background-position: center top;
-    /* grayscale + dunkel für Underground-Feeling */
-    filter: grayscale(100%) brightness(0.28) contrast(1.15);
+    background-position: center 20%;  /* weiter oben = mehr vom Körper sichtbar */
+    filter: grayscale(100%) brightness(0.55) contrast(1.25);
   }
 
   /* Rotes Gradient-Overlay über dem Video */
@@ -108,7 +106,7 @@
     inset: 0;
     z-index: 1;
     background:
-      linear-gradient(to top, rgba(6,6,6,0.95) 0%, rgba(6,6,6,0.3) 50%, rgba(6,6,6,0.6) 100%),
+      linear-gradient(to top, rgba(6,6,6,0.97) 0%, rgba(6,6,6,0.4) 40%, rgba(6,6,6,0.15) 100%),
       linear-gradient(135deg, var(--red-dim) 0%, transparent 60%);
   }
 
@@ -332,116 +330,397 @@
     text-align: right;
   }
 
-  /* Kompakter SC Player */
-  .sc-player {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    background: #0e0e0e;
-    border: 1px solid #1c1c1c;
-    border-left: 2px solid var(--red);
-    padding: 1.2rem 1.8rem;
-    max-width: 560px;
+  /* Kompakter SC Player — alles versteckt */
+  .sc-player,.sc-play-btn,.sc-skip-btn,.sc-info,.sc-link,.sc-iframe-hidden,.sc-progress,.sc-progress-fill,.sc-track-name,.sc-artist { display:none; }
+
+  /* ─── KASSETTENSPIELER ──────────────────────────── */
+  /* Klassischer Sony/Nakamichi Style — hell, clean, 80er */
+  .tape-deck {
+    position: relative;
+    max-width: 580px;
+    background: linear-gradient(160deg, #d8d8d8 0%, #c8c8c8 40%, #bdbdbd 100%);
+    border-radius: 6px;
+    border: 1.5px solid #aaa;
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      inset 0 -1px 0 rgba(0,0,0,0.15);
+    padding: 18px 20px 16px;
   }
 
-  /* Play/Pause Button */
-  .sc-play-btn {
-    width: 42px;
-    height: 42px;
-    border: 1px solid #2a2a2a;
+  .deck-shine {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.18), transparent);
+    pointer-events: none;
+  }
+
+  /* Kassetten-Fenster */
+  .deck-window {
+    background: #1a1a1a;
+    border-radius: 4px;
+    padding: 3px;
+    margin-bottom: 12px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.3);
+  }
+
+  .deck-window-inner {
     background: #111;
-    color: var(--text);
-    cursor: pointer;
+    border-radius: 3px;
+    padding: 14px 16px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    transition: border-color 0.2s, background 0.2s;
-    font-size: 0.9rem;
   }
 
-  .sc-play-btn:hover { border-color: var(--red); background: #1a0000; }
-
-  /* Prev / Next Buttons */
-  .sc-skip-btn {
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
+  /* Kassetten-Körper */
+  .cassette-body {
+    position: relative;
+    width: 320px;
+    height: 110px;
+    background: linear-gradient(160deg, #2a2a2a, #111);
+    border-radius: 4px;
+    border: 1px solid #333;
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: color 0.2s;
-    font-size: 0.75rem;
+    justify-content: space-between;
+    padding: 0 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.8);
   }
 
-  .sc-skip-btn:hover { color: var(--text); }
-
-  /* Track Info */
-  .sc-info {
-    flex: 1;
+  /* Foto als Kassetten-Label in der Mitte */
+  .cassette-label {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: 60px;
     overflow: hidden;
+    border-radius: 2px;
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
   }
 
-  .sc-track-name {
-    font-size: 0.78rem;
-    color: var(--text);
-    letter-spacing: 0.08em;
+  .cassette-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    filter: grayscale(40%) contrast(1.1);
+  }
+
+  .cassette-label-text {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(122,0,0,0.85);
+    font-family: var(--font-d);
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: #fff;
+    text-align: center;
+    padding: 2px;
+  }
+
+  /* Spulen */
+  .spool {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    z-index: 2;
+  }
+
+  .spool-disc {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #444, #111);
+    border: 2px solid #2a2a2a;
+    animation: spindeck 1s linear infinite;
+    animation-play-state: paused;
+  }
+
+  .spool-disc.playing { animation-play-state: running; }
+  .spool-disc.spool-rev { animation-direction: reverse; }
+
+  @keyframes spindeck { to { transform: rotate(360deg); } }
+
+  .spool-spoke {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 46%;
+    height: 1.5px;
+    background: #333;
+    transform-origin: left center;
+  }
+
+  .spool-hub {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 38%, #666, #222);
+    border: 1px solid #333;
+    z-index: 3;
+  }
+
+  .spool-hub::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #111;
+  }
+
+  /* Tape Öffnung unten */
+  .tape-opening {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 12px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .tape-guide {
+    width: 6px;
+    height: 10px;
+    background: #333;
+    border-radius: 1px;
+  }
+
+  .tape-strip {
+    flex: 1;
+    height: 3px;
+    background: #1a1a1a;
+    margin-bottom: 3px;
+  }
+
+  /* Display */
+  .deck-display {
+    background: #1c1c0a;
+    border: 1px solid #333;
+    border-radius: 3px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+  }
+
+  .deck-track-name {
+    font-size: 0.62rem;
+    color: #c8c820;
+    letter-spacing: 0.06em;
+    margin-bottom: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 0.2rem;
+    font-family: 'Courier New', monospace;
   }
 
-  .sc-artist {
-    font-size: 0.6rem;
-    color: var(--muted);
+  .deck-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .deck-status {
+    font-size: 0.5rem;
+    color: #7a0000;
     letter-spacing: 0.2em;
-    text-transform: uppercase;
+    font-family: 'Courier New', monospace;
   }
 
-  /* Fortschrittsbalken */
-  .sc-progress {
-    width: 100%;
-    height: 2px;
-    background: #1c1c1c;
-    margin-top: 0.8rem;
+  /* VU Meter */
+  .deck-vu {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+  }
+
+  .vu-bar {
+    width: 5px;
+    height: 18px;
+    background: #111;
+    border-radius: 1px;
     position: relative;
-    cursor: pointer;
+    overflow: hidden;
   }
 
-  .sc-progress-fill {
-    height: 100%;
-    background: var(--red);
-    width: 0%;
-    transition: width 0.5s linear;
-  }
-
-  /* Link zu SoundCloud */
-  .sc-link {
-    font-size: 0.58rem;
-    color: var(--muted);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    text-decoration: none;
-    flex-shrink: 0;
-    transition: color 0.2s;
-    border: 1px solid #1c1c1c;
-    padding: 0.5rem 0.8rem;
-  }
-
-  .sc-link:hover { color: var(--red); border-color: var(--red); }
-
-  /* Verstecktes SC iframe für Widget API */
-  .sc-iframe-hidden {
+  .vu-fill {
     position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    pointer-events: none;
+    bottom: 0; left: 0; right: 0;
+    height: 0%;
+    background: #c8c820;
+    transition: height 0.08s;
+  }
+
+  /* Controls */
+  .deck-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .deck-btns {
+    display: flex;
+    gap: 6px;
+  }
+
+  .deck-btn {
+    width: 38px;
+    height: 30px;
+    background: linear-gradient(to bottom, #bbb, #888);
+    border: 1px solid #777;
+    border-radius: 3px;
+    color: #333;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+    transition: all 0.1s;
+  }
+
+  .deck-btn:hover { background: linear-gradient(to bottom, #ccc, #999); }
+  .deck-btn:active { transform: translateY(1px); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+
+  .deck-btn.deck-play {
+    width: 46px;
+    height: 36px;
+    background: linear-gradient(to bottom, #990000, #660000);
+    border-color: #770000;
+    color: #fff;
+    font-size: 0.85rem;
+  }
+
+  .deck-btn.deck-play:hover { background: linear-gradient(to bottom, #bb0000, #880000); }
+
+  /* LED */
+  .deck-led {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #300;
+    border: 1px solid #400;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .deck-led.on {
+    background: #cc0000;
+    box-shadow: 0 0 8px #cc0000, 0 0 16px rgba(200,0,0,0.4);
+  }
+
+  /* Volume */
+  .deck-vol-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .deck-vol-label {
+    font-size: 0.42rem;
+    color: #666;
+    letter-spacing: 0.2em;
+    font-family: Arial, sans-serif;
+    text-transform: uppercase;
+  }
+
+  .deck-vol-rail {
+    position: relative;
+    width: 8px;
+    height: 70px;
+    background: #999;
+    border: 1px solid #777;
+    border-radius: 4px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .deck-vol-knob {
+    position: absolute;
+    left: 50%;
+    top: 18%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 13px;
+    background: linear-gradient(to bottom, #eee, #aaa);
+    border: 1px solid #888;
+    border-radius: 2px;
+    cursor: grab;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+  }
+
+  .deck-vol-knob::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px; height: 1px;
+    background: #888;
+  }
+
+  /* SC Embed direkt unter Kassette */
+  .sc-embed-wrap {
+    margin-top: 0;
+    border-top: 1px solid #999;
+    overflow: hidden;
+    border-radius: 0 0 4px 4px;
+  }
+
+  .sc-embed-wrap iframe {
+    display: block;
+    filter: grayscale(0.2);
+  }
+
+  /* Icons grösser und dicker */
+  .contact-list li span svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+  }
+  .presskit-text {
+    margin: 1.5rem 0;
+    padding: 1.2rem;
+    border-left: 2px solid var(--red);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .presskit-text p {
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.85;
+    margin-bottom: 0.8rem;
+  }
+
+  .presskit-text p:last-child { margin-bottom: 0; }
+
+  .presskit-genre {
+    font-size: 0.62rem !important;
+    color: var(--red) !important;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    .tape-deck { max-width: 100%; }
+    .cassette-body { width: 100%; }
   }
 
   /* ─── GENRES ────────────────────────────────────── */
@@ -669,11 +948,19 @@
 
 <!-- NAV -->
 <nav>
-  <div class="logo">BR<span>K</span></div>
-  <ul>
-    <li><a href="#sound">Sound</a></li>
-    <li><a href="#booking">Booking</a></li>
-  </ul>
+  <div class="logo">WILLY<span>'M</span></div>
+  <!-- 8-Ball Logo oben rechts -->
+  <div style="display:flex;align-items:center;gap:2rem;">
+    <ul>
+      <li><a href="#sound">Sound</a></li>
+      <li><a href="#booking">Booking</a></li>
+    </ul>
+    <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="18" cy="18" r="17" fill="#050505" stroke="#333" stroke-width="1"/>
+      <circle cx="18" cy="22" r="9" fill="#f0f0f0"/>
+      <text x="18" y="23" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,sans-serif" font-size="11" font-weight="900" fill="#000">8</text>
+    </svg>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -734,61 +1021,61 @@
   </span>
 </div>
 
-<!-- SOUNDCLOUD -->
+<!-- SOUNDCLOUD / KASSETTE -->
 <section class="sound-section" id="sound">
   <p class="section-label">Sound / Mixes</p>
 
   <div class="sound-header">
     <div>
       <h2 class="sound-title">WILLY<span>'M</span></h2>
-      <p style="font-size:0.62rem; color:var(--muted); letter-spacing:0.25em; text-transform:uppercase; margin-top:0.5rem;">Playlist · SoundCloud</p>
+      <p style="font-size:0.62rem; color:var(--muted); letter-spacing:0.25em; text-transform:uppercase; margin-top:0.5rem;">Frischer Wind / Friedasbude</p>
     </div>
     <p class="sound-meta">Underground Minimal</p>
   </div>
 
-  <!-- LERNHINWEIS: Das iframe ist unsichtbar (1px gross, opacity:0).
-       Die SoundCloud Widget API braucht ein echtes iframe zum Laden,
-       aber wir steuern es mit JavaScript und zeigen unsere eigene UI. -->
-  <iframe
-    id="sc-iframe"
-    class="sc-iframe-hidden"
-    allow="autoplay"
-    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1999619268&auto_play=false">
-  </iframe>
+  <!-- SoundCloud Player -->
+  <div class="sc-embed-wrap">
+    <iframe id="sc-iframe" allow="autoplay"
+      width="100%" height="90" scrolling="no" frameborder="no"
+      src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/burak-ates-1/willym-frischer-wind-friedasbu&auto_play=false&color=%237a0000&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false">
+    </iframe>
+  </div>
 
-  <!-- Unser eigener kompakter Player -->
-  <div class="sc-player">
+  <!-- DISPLAY -->
+  <div class="deck-display">
+    <div class="deck-track-name" id="deckTrackName">Willy'm — Frischer Wind / Friedasbude</div>
+    <div class="deck-status-row">
+      <div class="deck-status" id="deckStatus">&#9646;&#9646; STOP</div>
+      <div class="deck-vu">
+        <div class="vu-bar"><div class="vu-fill" id="d1"></div></div>
+        <div class="vu-bar"><div class="vu-fill" id="d2"></div></div>
+        <div class="vu-bar"><div class="vu-fill" id="d3"></div></div>
+        <div class="vu-bar"><div class="vu-fill" id="d4"></div></div>
+        <div class="vu-bar"><div class="vu-fill" id="d5"></div></div>
+        <div class="vu-bar"><div class="vu-fill" id="d6"></div></div>
+        <div class="vu-bar"><div class="vu-fill" id="d7"></div></div>
+        <div class="vu-bar"><div class="vu-fill" id="d8"></div></div>
+      </div>
+    </div>
+  </div>
 
-    <!-- Zurück-Button -->
-    <button class="sc-skip-btn" id="sc-prev" title="Vorheriger Track" aria-label="Vorheriger Track">
-      &#9664;&#9664;
-    </button>
-
-    <!-- Play/Pause Button -->
-    <button class="sc-play-btn" id="sc-play" title="Play / Pause" aria-label="Play / Pause">
-      &#9654;
-    </button>
-
-    <!-- Vor-Button -->
-    <button class="sc-skip-btn" id="sc-next" title="Nächster Track" aria-label="Nächster Track">
-      &#9654;&#9654;
-    </button>
-
-    <!-- Track Info -->
-    <div class="sc-info">
-      <div class="sc-track-name" id="sc-title">Lädt...</div>
-      <div class="sc-artist">WILLY'M</div>
-      <!-- Fortschrittsbalken -->
-      <div class="sc-progress">
-        <div class="sc-progress-fill" id="sc-bar"></div>
+    <!-- CONTROLS -->
+    <div class="deck-controls">
+      <div class="deck-btns">
+        <button class="deck-btn" id="deckPrev">&#9664;&#9664;</button>
+        <button class="deck-btn deck-play" id="deckPlay">&#9654;</button>
+        <button class="deck-btn" id="deckStop">&#9646;&#9646;</button>
+        <button class="deck-btn" id="deckNext">&#9654;&#9654;</button>
+      </div>
+      <div class="deck-led" id="deckLed"></div>
+      <div class="deck-vol-wrap">
+        <span class="deck-vol-label">VOL</span>
+        <div class="deck-vol-rail" id="deckVolRail">
+          <div class="deck-vol-knob" id="deckVolKnob"></div>
+        </div>
       </div>
     </div>
 
-    <!-- Link zu SoundCloud -->
-    <a href="https://soundcloud.com/burak-ates-1/sets/willym"
-       target="_blank"
-       rel="noopener"
-       class="sc-link">SC ↗</a>
   </div>
 </section>
 
@@ -805,18 +1092,31 @@
         Roh. Tief. Unberechenbar.<br>
         Nicht für alle. Nur für die, die bleiben.
       </p>
+
+      <!-- Presskit Text -->
+      <div class="presskit-text">
+        <p>In Solothurn aufgewachsen und heute zwischen Solothurn und Zürich musikalisch zu Hause, steht Willy'M aka Burak Ates für einen reduzierten, hypnotischen Club-Sound zwischen Minimal, Deeptech, Micro und Tech House. Der Fokus liegt auf Groove, Spannung und Atmosphäre statt auf schnellen Drops oder Effekthascherei.</p>
+        <p>Geprägt von der europäischen Underground-Szene verbindet er tiefe Basslines, subtile Percussions und präzise Dramaturgie zu Sets, die langsam aufgebaut werden und den Dancefloor in einen konstanten Flow führen. Keine Peak-Time-Show, sondern eine musikalische Reise für lange Nächte und intime Floors — ideal für Warm-ups, Afterhours und deepen Club-Sound.</p>
+      </div>
+
       <ul class="contact-list">
         <li>
-          <span>Mail</span>
-          <span>booking@brk-dj.com</span>
+          <span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;color:var(--red)"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 4l10 9 10-9" fill="none"/></svg>
+          </span>
+          <a href="mailto:booking@brk-dj.com" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'">booking@brk-dj.com</a>
         </li>
         <li>
-          <span>SC</span>
-          <a href="https://soundcloud.com/burak-ates-1" target="_blank" rel="noopener" style="color: var(--muted); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'">soundcloud.com/burak-ates-1</a>
+          <span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;color:var(--red)"><path d="M1.5 13.5c0 1.4 1.1 2.5 2.5 2.5h14c1.7 0 3-1.3 3-3 0-1.5-1.1-2.8-2.6-3-.1-2.5-2.2-4.5-4.7-4.5-1.5 0-2.9.7-3.8 1.8-.3-.1-.6-.1-.9-.1-1.9 0-3.5 1.5-3.5 3.5 0 .1 0 .2 0 .3C1.9 11.8 1.5 12.6 1.5 13.5z"/></svg>
+          </span>
+          <a href="https://soundcloud.com/burak-ates-1" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'">soundcloud.com/burak-ates-1</a>
         </li>
         <li>
-          <span>IG</span>
-          <a href="https://www.instagram.com/willym.so/" target="_blank" rel="noopener" style="color: var(--muted); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'">instagram.com/willym.so</a>
+          <span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;color:var(--red)"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+          </span>
+          <a href="https://www.instagram.com/willym.so/" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'">instagram.com/willym.so</a>
         </li>
       </ul>
     </div>
@@ -865,7 +1165,6 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">BR<span>K</span></div>
   <div class="footer-cities">
     <span>Solothurn</span>
     <div class="dot"></div>
@@ -883,70 +1182,86 @@
 
 <script src="https://w.soundcloud.com/player/api.js"></script>
 <script>
-  // ─── SOUNDCLOUD WIDGET API ───────────────────────────
-  // LERNHINWEIS: SC.Widget() verbindet uns mit dem versteckten iframe.
-  // Danach können wir play(), pause(), next(), prev() aufrufen
-  // und Events wie PLAY, PAUSE, FINISH abhören.
+  // ─── KASSETTENSPIELER ─────────────────────────────
+  const spoolL     = document.getElementById('spoolL');
+  const spoolR     = document.getElementById('spoolR');
+  const deckLed    = document.getElementById('deckLed');
+  const deckPlay   = document.getElementById('deckPlay');
+  const deckStop   = document.getElementById('deckStop');
+  const deckPrev   = document.getElementById('deckPrev');
+  const deckNext   = document.getElementById('deckNext');
+  const deckStatus = document.getElementById('deckStatus');
+  const deckTrack  = document.getElementById('deckTrackName');
+  const vuFills    = [d1,d2,d3,d4,d5,d6,d7,d8];
 
-  const iframe  = document.getElementById('sc-iframe');
-  const widget  = SC.Widget(iframe);
+  const widget = SC.Widget(document.getElementById('sc-iframe'));
+  let playing  = false;
+  let vuTimer  = null;
 
-  const playBtn = document.getElementById('sc-play');
-  const prevBtn = document.getElementById('sc-prev');
-  const nextBtn = document.getElementById('sc-next');
-  const titleEl = document.getElementById('sc-title');
-  const barEl   = document.getElementById('sc-bar');
+  function setPlaying(s) {
+    playing = s;
+    spoolL.classList.toggle('playing', s);
+    spoolR.classList.toggle('playing', s);
+    deckLed.classList.toggle('on', s);
+    deckPlay.innerHTML = s ? '&#9646;&#9646;' : '&#9654;';
+    deckStatus.textContent = s ? '&#9654; PLAY' : '&#9646;&#9646; STOP';
+    s ? startVU() : stopVU();
+  }
 
-  let isPlaying = false;
+  function startVU() {
+    vuTimer = setInterval(() => {
+      vuFills.forEach(b => {
+        const h = 10 + Math.random() * 85;
+        b.style.height = h + '%';
+        b.style.background = h > 80 ? '#cc0000' : h > 55 ? '#c8a000' : '#c8c820';
+      });
+    }, 100);
+  }
 
-  // Wenn der Player bereit ist: ersten Track-Namen holen
+  function stopVU() {
+    clearInterval(vuTimer);
+    vuFills.forEach(b => { b.style.height = '0%'; });
+  }
+
   widget.bind(SC.Widget.Events.READY, () => {
-    widget.getCurrentSound(sound => {
-      if (sound) titleEl.textContent = sound.title;
-    });
+    widget.getCurrentSound(s => { if (s) deckTrack.textContent = s.title; });
   });
-
-  // Play/Pause Button
-  playBtn.addEventListener('click', () => {
-    widget.toggle(); // toggle() wechselt zwischen play und pause
-  });
-
-  // Nächster Track
-  nextBtn.addEventListener('click', () => { widget.next(); });
-
-  // Vorheriger Track
-  prevBtn.addEventListener('click', () => { widget.prev(); });
-
-  // Icon wechseln wenn Musik läuft
   widget.bind(SC.Widget.Events.PLAY, () => {
-    isPlaying = true;
-    playBtn.innerHTML = '&#9646;&#9646;'; // Pause-Symbol
-    // Track-Name aktualisieren
-    widget.getCurrentSound(sound => {
-      if (sound) titleEl.textContent = sound.title;
-    });
+    setPlaying(true);
+    widget.getCurrentSound(s => { if (s) deckTrack.textContent = s.title; });
   });
+  widget.bind(SC.Widget.Events.PAUSE, () => setPlaying(false));
+  widget.bind(SC.Widget.Events.FINISH, () => setPlaying(false));
 
-  widget.bind(SC.Widget.Events.PAUSE, () => {
-    isPlaying = false;
-    playBtn.innerHTML = '&#9654;'; // Play-Symbol
+  deckPlay.addEventListener('click', () => widget.toggle());
+  deckStop.addEventListener('click', () => { widget.pause(); setPlaying(false); });
+  deckNext.addEventListener('click', () => widget.next());
+  deckPrev.addEventListener('click', () => widget.prev());
+
+  // Volume Fader
+  const volRail = document.getElementById('deckVolRail');
+  const volKnob = document.getElementById('deckVolKnob');
+  let drag = false;
+  volKnob.addEventListener('mousedown', e => { drag = true; e.preventDefault(); });
+  document.addEventListener('mousemove', e => {
+    if (!drag) return;
+    const r = volRail.getBoundingClientRect();
+    let y = Math.max(0, Math.min(r.height - 13, e.clientY - r.top - 6));
+    volKnob.style.top = y + 'px';
+    volKnob.style.transform = 'translateX(-50%)';
+    widget.setVolume(Math.round(100 - (y / (r.height - 13)) * 100));
   });
+  document.addEventListener('mouseup', () => drag = false);
+  volKnob.addEventListener('touchmove', e => {
+    e.preventDefault();
+    const r = volRail.getBoundingClientRect();
+    let y = Math.max(0, Math.min(r.height - 13, e.touches[0].clientY - r.top - 6));
+    volKnob.style.top = y + 'px';
+    volKnob.style.transform = 'translateX(-50%)';
+    widget.setVolume(Math.round(100 - (y / (r.height - 13)) * 100));
+  }, { passive: false });
 
-  widget.bind(SC.Widget.Events.FINISH, () => {
-    isPlaying = false;
-    playBtn.innerHTML = '&#9654;';
-    barEl.style.width = '0%';
-  });
-
-  // Fortschrittsbalken aktualisieren
-  // LERNHINWEIS: PLAY_PROGRESS wird laufend gefeuert, gibt position und duration in ms
-  widget.bind(SC.Widget.Events.PLAY_PROGRESS, (e) => {
-    const pct = (e.currentPosition / e.relativePosition) * e.relativePosition;
-    // Einfachere Berechnung: relativePosition ist bereits 0–1
-    barEl.style.width = (e.relativePosition * 100) + '%';
-  });
-
-  // ─── FORMULAR ────────────────────────────────────────
+  // ─── FORMULAR ─────────────────────────────────────
   function handleSubmit(e) {
     e.preventDefault();
     const btn = e.target.querySelector('button[type="submit"]');
