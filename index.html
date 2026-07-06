@@ -948,7 +948,7 @@
 
 <!-- NAV -->
 <nav>
- <div class="logo">ACHTAM<span>SCHLUSS.</span></div>
+  <div class="logo">WILLY<span>'M</span></div>
   <!-- 8-Ball Logo oben rechts -->
   <div style="display:flex;align-items:center;gap:2rem;">
     <ul>
@@ -1095,9 +1095,8 @@
 
       <!-- Presskit Text -->
       <div class="presskit-text">
-  <p>In Solothurn aufgewachsen und heute zwischen Solothurn und Zürich musikalisch zu Hause, steht Willy'M aka Burak Ates für einen reduzierten, hypnotischen Club-Sound zwischen Minimal, Deeptech, Micro und Tech House. Der Fokus liegt auf Groove, Spannung und Atmosphäre statt auf schnellen Drops oder Effekthascherei.</p>
-  <p>Geprägt von der europäischen Underground-Szene verbindet er tiefe Basslines, subtile Percussions und präzise Dramaturgie zu Sets, die langsam aufgebaut werden und den Dancefloor in einen konstanten Flow führen. Wenn Rhythmus zur Sprache wird und Wiederholung ihren Sinn verliert, beginnt der Moment, in dem Musik nicht mehr gehört, sondern erlebt wird.</p>
-</div>
+        <p>In Solothurn aufgewachsen und heute zwischen Solothurn und Zürich musikalisch zu Hause, steht Willy'M aka Burak Ates für einen reduzierten, hypnotischen Club-Sound zwischen Minimal, Deeptech, Micro und Tech House. Der Fokus liegt auf Groove, Spannung und Atmosphäre statt auf schnellen Drops oder Effekthascherei.</p>
+        <p>Geprägt von der europäischen Underground-Szene verbindet er tiefe Basslines, subtile Percussions und präzise Dramaturgie zu Sets, die langsam aufgebaut werden und den Dancefloor in einen konstanten Flow führen. Keine Peak-Time-Show, sondern eine musikalische Reise für lange Nächte und intime Floors — ideal für Warm-ups, Afterhours und deepen Club-Sound.</p>
       </div>
 
       <ul class="contact-list">
@@ -1178,6 +1177,11 @@
   <div class="footer-right">
     <div>© 2026</div>
     <div style="color:#2a2a2a; margin-top:0.3rem;">Available Worldwide</div>
+  </div>
+  <!-- Besucherzähler -->
+  <div style="width:100%; text-align:center; margin-top:1rem; padding-top:1rem; border-top:1px solid #1a1a1a;">
+    <span style="font-size:0.55rem; color:#333; letter-spacing:0.3em; text-transform:uppercase;">Besucher</span>
+    <span id="visit-count" style="font-size:0.55rem; color:#555; letter-spacing:0.2em; margin-left:0.5rem;">—</span>
   </div>
 </footer>
 
@@ -1262,6 +1266,19 @@
     widget.setVolume(Math.round(100 - (y / (r.height - 13)) * 100));
   }, { passive: false });
 
+  // ─── BESUCHERZÄHLER ───────────────────────────────
+  // LERNHINWEIS: fetch() ruft eine externe URL auf und bekommt Daten zurück.
+  // counterapi.dev zählt jeden Aufruf und gibt die aktuelle Zahl zurück.
+  // namespace = dein eindeutiger Name, key = Name des Zählers
+  fetch('https://api.counterapi.dev/v1/willym-dj/visits/up')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('visit-count').textContent = data.count.toLocaleString('de-CH');
+    })
+    .catch(() => {
+      document.getElementById('visit-count').textContent = '';
+    });
+
   // ─── FORMULAR ─────────────────────────────────────
   function handleSubmit(e) {
     e.preventDefault();
@@ -1281,5 +1298,5 @@
   });
 </script>
 
-</body> <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c57905383666446c9691cdf25efcd24c"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
 </html>
