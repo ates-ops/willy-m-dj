@@ -330,358 +330,351 @@
     text-align: right;
   }
 
-  /* Kompakter SC Player — alles versteckt */
-  .sc-player,.sc-play-btn,.sc-skip-btn,.sc-info,.sc-link,.sc-iframe-hidden,.sc-progress,.sc-progress-fill,.sc-track-name,.sc-artist { display:none; }
+  /* ─── PLATTENSPIELER ────────────────────────────── */
+  /* LERNHINWEIS: Alle Masse sind in % eines 500×360 Rasters angegeben.
+     So skaliert der ganze Plattenspieler mit der Breite (aspect-ratio).
+     cqw = 1% der Breite des Containers (container-type) → Schrift wächst mit. */
+  .sound-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 3rem;
+    align-items: center;
+  }
 
-  /* ─── KASSETTENSPIELER ──────────────────────────── */
-  /* Klassischer Sony/Nakamichi Style — hell, clean, 80er */
-  .tape-deck {
+  .turntable {
     position: relative;
-    max-width: 580px;
-    background: linear-gradient(160deg, #d8d8d8 0%, #c8c8c8 40%, #bdbdbd 100%);
-    border-radius: 6px;
-    border: 1.5px solid #aaa;
+    width: 100%;
+    aspect-ratio: 500 / 360;
+    container-type: inline-size;
+    border-radius: 10px;
+    background:
+      radial-gradient(ellipse at 25% 0%, rgba(255,255,255,0.07), transparent 60%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.015) 0 1px, transparent 1px 3px),
+      linear-gradient(160deg, #1f1f1f 0%, #131313 55%, #0b0b0b 100%);
+    border: 1px solid #262626;
     box-shadow:
-      0 12px 40px rgba(0,0,0,0.7),
-      inset 0 1px 0 rgba(255,255,255,0.6),
-      inset 0 -1px 0 rgba(0,0,0,0.15);
-    padding: 18px 20px 16px;
+      0 30px 60px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      inset 0 -2px 0 rgba(0,0,0,0.6);
+    user-select: none;
+    -webkit-user-select: none;
   }
 
-  .deck-shine {
+  /* Plattenteller mit Stroboskop-Punkten am Rand */
+  .tt-platter {
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 50%;
-    border-radius: 6px 6px 0 0;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.18), transparent);
-    pointer-events: none;
+    left: 39%;
+    top: 50%;
+    width: 60%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: repeating-conic-gradient(#8a8a8a 0 1.2deg, #303030 1.2deg 3deg);
+    box-shadow:
+      0 0 0 2px #070707,
+      0 12px 28px rgba(0,0,0,0.75),
+      inset 0 0 0 3px #1c1c1c;
+    will-change: transform;
   }
 
-  /* Kassetten-Fenster */
-  .deck-window {
-    background: #1a1a1a;
-    border-radius: 4px;
-    padding: 3px;
-    margin-bottom: 12px;
-    box-shadow: inset 0 2px 8px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.3);
-  }
-
-  .deck-window-inner {
-    background: #111;
-    border-radius: 3px;
-    padding: 14px 16px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Kassetten-Körper */
-  .cassette-body {
-    position: relative;
-    width: 320px;
-    height: 110px;
-    background: linear-gradient(160deg, #2a2a2a, #111);
-    border-radius: 4px;
-    border: 1px solid #333;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 14px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.8);
-  }
-
-  /* Foto als Kassetten-Label in der Mitte */
-  .cassette-label {
+  /* Vinyl mit Rillen */
+  .tt-record {
     position: absolute;
-    top: 8px;
     left: 50%;
-    transform: translateX(-50%);
-    width: 110px;
-    height: 60px;
-    overflow: hidden;
-    border-radius: 2px;
-    border: 1px solid #333;
+    top: 50%;
+    width: 91.33%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background:
+      radial-gradient(circle closest-side, transparent 0 96.4%, #1c1c1c 97% 99%, #050505 100%),
+      radial-gradient(circle closest-side, transparent 0 33%, #121212 33.5% 40.5%, transparent 41%),
+      radial-gradient(circle closest-side, transparent 0 69.6%, #050505 69.9% 70.3%, transparent 70.6%),
+      repeating-radial-gradient(circle closest-side, #0c0c0c 0 1px, #171717 1px 2px, #0a0a0a 2px 3px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.9);
+  }
+
+  /* Label in der Mitte der Platte */
+  .tt-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 33.6%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle closest-side, #9a0000 0%, #7a0000 70%, #560000 100%);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.7), inset 0 0 0 0.35cqw rgba(0,0,0,0.25);
     display: flex;
     flex-direction: column;
-  }
-
-  .cassette-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-    filter: grayscale(40%) contrast(1.1);
-  }
-
-  .cassette-label-text {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(122,0,0,0.85);
-    font-family: var(--font-d);
-    font-size: 0.55rem;
-    letter-spacing: 0.2em;
+    align-items: center;
+    justify-content: center;
     color: #fff;
     text-align: center;
-    padding: 2px;
   }
 
-  /* Spulen */
-  .spool {
-    position: relative;
-    width: 64px;
-    height: 64px;
-    flex-shrink: 0;
-    z-index: 2;
+  .tt-label-title {
+    font-family: var(--font-d);
+    font-size: 3.4cqw;
+    line-height: 1;
+    letter-spacing: 0.06em;
   }
 
-  .spool-disc {
+  .tt-label-hole {
+    width: 1.6cqw;
+    aspect-ratio: 1;
+    margin: 0.7cqw 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ddd 0 30%, #777 60%, #222 100%);
+    box-shadow: 0 0 0 0.25cqw rgba(0,0,0,0.5);
+  }
+
+  .tt-label-small {
+    font-size: 0.85cqw;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    line-height: 1.5;
+  }
+
+  /* Lichtreflex: dreht NICHT mit, liegt über der Platte. Klick = Nadel aufsetzen */
+  .tt-sheen {
+    position: absolute;
+    left: 39%;
+    top: 50%;
+    width: 54.8%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: conic-gradient(from 20deg,
+      transparent 0deg, rgba(255,255,255,0.09) 25deg, transparent 52deg,
+      transparent 180deg, rgba(255,255,255,0.07) 205deg, transparent 232deg);
+    -webkit-mask: radial-gradient(circle closest-side, transparent 0 40%, #000 41% 96%, transparent 97%);
+            mask: radial-gradient(circle closest-side, transparent 0 40%, #000 41% 96%, transparent 97%);
+    cursor: crosshair;
+  }
+
+  /* Tonarm (SVG) liegt über allem */
+  .tt-arm-layer {
     position: absolute;
     inset: 0;
-    border-radius: 50%;
-    background: radial-gradient(circle at 38% 35%, #444, #111);
-    border: 2px solid #2a2a2a;
-    animation: spindeck 1s linear infinite;
-    animation-play-state: paused;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
   }
 
-  .spool-disc.playing { animation-play-state: running; }
-  .spool-disc.spool-rev { animation-direction: reverse; }
-
-  @keyframes spindeck { to { transform: rotate(360deg); } }
-
-  .spool-spoke {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 46%;
-    height: 1.5px;
-    background: #333;
-    transform-origin: left center;
+  #ttArm {
+    transform-box: view-box;
+    transform-origin: 420px 88px;
+    transition: transform 1.2s cubic-bezier(.45,0,.2,1);
   }
 
-  .spool-hub {
+  /* Start/Stop Taste */
+  .tt-start {
     position: absolute;
-    top: 50%; left: 50%;
+    left: 9.6%;
+    top: 91%;
+    width: 11.2%;
+    aspect-ratio: 56 / 22;
     transform: translate(-50%, -50%);
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 38% 38%, #666, #222);
-    border: 1px solid #333;
-    z-index: 3;
+    background: linear-gradient(to bottom, #3a3a3a, #1b1b1b);
+    border: 1px solid #444;
+    border-radius: 3px;
+    color: #aaa;
+    font-family: var(--font-b);
+    font-size: 1.15cqw;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.12);
   }
 
-  .spool-hub::after {
+  .tt-start:hover { color: #fff; }
+  .tt-start:active { transform: translate(-50%, -45%); box-shadow: 0 1px 2px rgba(0,0,0,0.6); }
+  .tt-start.on { color: #ff4040; text-shadow: 0 0 6px rgba(255,0,0,0.6); }
+
+  /* 33 / 45 Tasten */
+  .tt-rpm {
+    position: absolute;
+    top: 92.8%;
+    width: 5.2%;
+    aspect-ratio: 26 / 14;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(to bottom, #2e2e2e, #161616);
+    border: 1px solid #3a3a3a;
+    border-radius: 2px;
+    color: #777;
+    font-family: var(--font-b);
+    font-size: 0.95cqw;
+    cursor: pointer;
+  }
+
+  .tt-rpm[data-rpm="33.33"] { left: 24%; }
+  .tt-rpm[data-rpm="45"]    { left: 30.4%; }
+  .tt-rpm.active { color: #ff4040; border-color: #5a0000; }
+
+  /* Lampe oben links (Target Light) */
+  .tt-light {
+    position: absolute;
+    left: 7%;
+    top: 10%;
+    width: 3.6%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #444, #111);
+    border: 1px solid #333;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+
+  .tt-light.on {
+    background: radial-gradient(circle at 40% 35%, #ff6a6a, #b00000);
+    box-shadow: 0 0 1.5cqw rgba(255,0,0,0.7), 0 0 4cqw rgba(255,0,0,0.25);
+  }
+
+  /* Lautstärke-Fader rechts (wie Pitch-Fader beim Original) */
+  .tt-fader {
+    position: absolute;
+    left: 94.4%;
+    top: 64%;
+    width: 3.6%;
+    height: 44%;
+    transform: translate(-50%, -50%);
+    cursor: ns-resize;
+    touch-action: none;
+    outline: none;
+  }
+
+  .tt-fader::before {
     content: '';
     position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #111;
-  }
-
-  /* Tape Öffnung unten */
-  .tape-opening {
-    position: absolute;
-    bottom: 0;
     left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 28%;
     transform: translateX(-50%);
-    width: 100px;
-    height: 12px;
+    background: #050505;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .tt-fader-knob {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 12%;
+    transform: translateY(-50%);
+    background: linear-gradient(to bottom, #e6e6e6, #8a8a8a);
+    border: 1px solid #555;
+    border-radius: 2px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+  }
+
+  .tt-fader-knob::after {
+    content: '';
+    position: absolute;
+    left: 15%;
+    right: 15%;
+    top: 50%;
+    height: 1px;
+    background: #7a0000;
+  }
+
+  .tt-fader:focus-visible .tt-fader-knob { outline: 1px solid var(--red); outline-offset: 2px; }
+
+  .tt-fader-label {
+    position: absolute;
+    left: 94.4%;
+    top: 37.5%;
+    transform: translate(-50%, -50%);
+    font-size: 0.9cqw;
+    letter-spacing: 0.2em;
+    color: #666;
+  }
+
+  .tt-brand {
+    position: absolute;
+    right: 3.5%;
+    bottom: 3.5%;
+    font-family: var(--font-d);
+    font-size: 1.8cqw;
+    letter-spacing: 0.2em;
+    color: #3a3a3a;
+  }
+
+  .tt-brand span { color: var(--red); }
+
+  /* Display rechts neben dem Plattenspieler */
+  .tt-side { display: flex; flex-direction: column; gap: 1.2rem; }
+
+  .tt-display {
+    background: #0d0d0d;
+    border: 1px solid #1f1f1f;
+    border-left: 2px solid var(--red);
+    padding: 1.1rem 1.2rem;
+  }
+
+  .tt-display-row {
     display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 4px;
-  }
-
-  .tape-guide {
-    width: 6px;
-    height: 10px;
-    background: #333;
-    border-radius: 1px;
-  }
-
-  .tape-strip {
-    flex: 1;
-    height: 3px;
-    background: #1a1a1a;
-    margin-bottom: 3px;
-  }
-
-  /* Display */
-  .deck-display {
-    background: #1c1c0a;
-    border: 1px solid #333;
-    border-radius: 3px;
-    padding: 8px 12px;
-    margin-bottom: 10px;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
-  }
-
-  .deck-track-name {
-    font-size: 0.62rem;
-    color: #c8c820;
-    letter-spacing: 0.06em;
-    margin-bottom: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-family: 'Courier New', monospace;
-  }
-
-  .deck-status-row {
-    display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: baseline;
     gap: 1rem;
   }
 
-  .deck-status {
-    font-size: 0.5rem;
-    color: #7a0000;
-    letter-spacing: 0.2em;
-    font-family: 'Courier New', monospace;
-  }
-
-  /* VU Meter */
-  .deck-vu {
-    display: flex;
-    gap: 2px;
-    align-items: flex-end;
-  }
-
-  .vu-bar {
-    width: 5px;
-    height: 18px;
-    background: #111;
-    border-radius: 1px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .vu-fill {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 0%;
-    background: #c8c820;
-    transition: height 0.08s;
-  }
-
-  /* Controls */
-  .deck-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .deck-btns {
-    display: flex;
-    gap: 6px;
-  }
-
-  .deck-btn {
-    width: 38px;
-    height: 30px;
-    background: linear-gradient(to bottom, #bbb, #888);
-    border: 1px solid #777;
-    border-radius: 3px;
-    color: #333;
-    font-size: 0.7rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
-    transition: all 0.1s;
-  }
-
-  .deck-btn:hover { background: linear-gradient(to bottom, #ccc, #999); }
-  .deck-btn:active { transform: translateY(1px); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
-
-  .deck-btn.deck-play {
-    width: 46px;
-    height: 36px;
-    background: linear-gradient(to bottom, #990000, #660000);
-    border-color: #770000;
+  .tt-track {
+    font-size: 0.72rem;
     color: #fff;
-    font-size: 0.85rem;
-  }
-
-  .deck-btn.deck-play:hover { background: linear-gradient(to bottom, #bb0000, #880000); }
-
-  /* LED */
-  .deck-led {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: #300;
-    border: 1px solid #400;
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-
-  .deck-led.on {
-    background: #cc0000;
-    box-shadow: 0 0 8px #cc0000, 0 0 16px rgba(200,0,0,0.4);
-  }
-
-  /* Volume */
-  .deck-vol-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-  }
-
-  .deck-vol-label {
-    font-size: 0.42rem;
-    color: #666;
-    letter-spacing: 0.2em;
-    font-family: Arial, sans-serif;
-    text-transform: uppercase;
-  }
-
-  .deck-vol-rail {
-    position: relative;
-    width: 8px;
-    height: 70px;
-    background: #999;
-    border: 1px solid #777;
-    border-radius: 4px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-  }
-
-  .deck-vol-knob {
-    position: absolute;
-    left: 50%;
-    top: 18%;
-    transform: translateX(-50%);
-    width: 22px;
-    height: 13px;
-    background: linear-gradient(to bottom, #eee, #aaa);
-    border: 1px solid #888;
-    border-radius: 2px;
-    cursor: grab;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-  }
-
-  .deck-vol-knob::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 12px; height: 1px;
-    background: #888;
-  }
-
-  /* SC Embed direkt unter Kassette */
-  .sc-embed-wrap {
-    margin-top: 0;
-    border-top: 1px solid #999;
+    letter-spacing: 0.08em;
     overflow: hidden;
-    border-radius: 0 0 4px 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .tt-status {
+    font-size: 0.58rem;
+    color: var(--muted);
+    letter-spacing: 0.25em;
+    white-space: nowrap;
+  }
+
+  .tt-status.on { color: #ff4040; }
+
+  .tt-progress {
+    position: relative;
+    height: 6px;
+    margin: 0.9rem 0 0.5rem;
+    background: #1a1a1a;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .tt-progress:focus-visible { box-shadow: 0 0 0 1px var(--red); }
+
+  .tt-progress-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0%;
+    background: var(--red);
+  }
+
+  .tt-time {
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+  }
+
+  .tt-hint {
+    font-size: 0.6rem;
+    color: #777;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+
+  /* SC Mini-Player (bleibt sichtbar – SoundCloud verlangt Attribution) */
+  .sc-embed-wrap {
+    overflow: hidden;
+    border: 1px solid #1f1f1f;
   }
 
   .sc-embed-wrap iframe {
@@ -689,6 +682,20 @@
     filter: grayscale(0.2);
   }
 
+  .tt-sc-link {
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .tt-sc-link:hover { color: var(--red); }
+
+  @media (max-width: 900px) {
+    .sound-stage { grid-template-columns: 1fr; gap: 2rem; }
+  }
   /* Icons grösser und dicker */
   .contact-list li span svg {
     width: 20px;
@@ -718,10 +725,6 @@
     text-transform: uppercase;
   }
 
-  @media (max-width: 768px) {
-    .tape-deck { max-width: 100%; }
-    .cassette-body { width: 100%; }
-  }
 
   /* ─── GENRES ────────────────────────────────────── */
   .genre-grid {
@@ -1033,47 +1036,107 @@
     <p class="sound-meta">Underground Minimal</p>
   </div>
 
-  <!-- SoundCloud Player -->
-  <div class="sc-embed-wrap">
-    <iframe id="sc-iframe" allow="autoplay"
-      width="100%" height="90" scrolling="no" frameborder="no"
-      src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/burak-ates-1/willym-frischer-wind-friedasbu&auto_play=false&color=%237a0000&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false">
-    </iframe>
-  </div>
+  <div class="sound-stage">
 
-  <!-- DISPLAY -->
-  <div class="deck-display">
-    <div class="deck-track-name" id="deckTrackName">Willy'm — Frischer Wind / Friedasbude</div>
-    <div class="deck-status-row">
-      <div class="deck-status" id="deckStatus">&#9646;&#9646; STOP</div>
-      <div class="deck-vu">
-        <div class="vu-bar"><div class="vu-fill" id="d1"></div></div>
-        <div class="vu-bar"><div class="vu-fill" id="d2"></div></div>
-        <div class="vu-bar"><div class="vu-fill" id="d3"></div></div>
-        <div class="vu-bar"><div class="vu-fill" id="d4"></div></div>
-        <div class="vu-bar"><div class="vu-fill" id="d5"></div></div>
-        <div class="vu-bar"><div class="vu-fill" id="d6"></div></div>
-        <div class="vu-bar"><div class="vu-fill" id="d7"></div></div>
-        <div class="vu-bar"><div class="vu-fill" id="d8"></div></div>
-      </div>
-    </div>
-  </div>
+    <!-- PLATTENSPIELER -->
+    <div class="turntable" id="turntable">
+      <div class="tt-light" id="ttLight" aria-hidden="true"></div>
 
-    <!-- CONTROLS -->
-    <div class="deck-controls">
-      <div class="deck-btns">
-        <button class="deck-btn" id="deckPrev">&#9664;&#9664;</button>
-        <button class="deck-btn deck-play" id="deckPlay">&#9654;</button>
-        <button class="deck-btn" id="deckStop">&#9646;&#9646;</button>
-        <button class="deck-btn" id="deckNext">&#9654;&#9654;</button>
-      </div>
-      <div class="deck-led" id="deckLed"></div>
-      <div class="deck-vol-wrap">
-        <span class="deck-vol-label">VOL</span>
-        <div class="deck-vol-rail" id="deckVolRail">
-          <div class="deck-vol-knob" id="deckVolKnob"></div>
+      <div class="tt-platter" id="ttPlatter" aria-hidden="true">
+        <div class="tt-record">
+          <div class="tt-label">
+            <div class="tt-label-title">WILLY'M</div>
+            <div class="tt-label-hole"></div>
+            <div class="tt-label-small">Frischer Wind<br>Side A · 33⅓</div>
+          </div>
         </div>
       </div>
+
+      <div class="tt-sheen" id="ttSheen" title="Klick auf die Rillen = Nadel aufsetzen"></div>
+
+      <!-- Tonarm: Drehpunkt bei (420, 88) im 500×360 Raster -->
+      <svg class="tt-arm-layer" viewBox="0 0 500 360" aria-hidden="true">
+        <defs>
+          <linearGradient id="ttMetal" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#5a5a5a"/>
+            <stop offset="0.45" stop-color="#e6e6e6"/>
+            <stop offset="0.7" stop-color="#999"/>
+            <stop offset="1" stop-color="#444"/>
+          </linearGradient>
+          <radialGradient id="ttBase" cx="0.4" cy="0.35">
+            <stop offset="0" stop-color="#3a3a3a"/>
+            <stop offset="1" stop-color="#121212"/>
+          </radialGradient>
+          <radialGradient id="ttCap" cx="0.35" cy="0.35">
+            <stop offset="0" stop-color="#f0f0f0"/>
+            <stop offset="1" stop-color="#555"/>
+          </radialGradient>
+          <filter id="ttShadow" x="-30%" y="-10%" width="160%" height="130%">
+            <feDropShadow dx="5" dy="7" stdDeviation="3.5" flood-color="#000" flood-opacity="0.65"/>
+          </filter>
+        </defs>
+
+        <!-- Sockel + Armablage -->
+        <circle cx="420" cy="88" r="34" fill="url(#ttBase)" stroke="#2c2c2c"/>
+        <circle cx="420" cy="88" r="24" fill="#0e0e0e" stroke="#333"/>
+        <circle cx="462" cy="52" r="8" fill="#161616" stroke="#3a3a3a"/>
+        <rect x="408" y="246" width="24" height="12" rx="2" fill="#151515" stroke="#333"/>
+        <circle cx="420" cy="252" r="3" fill="#555"/>
+
+        <g filter="url(#ttShadow)">
+          <g id="ttArm">
+            <rect x="408" y="30" width="24" height="32" rx="4" fill="url(#ttMetal)"/>
+            <rect x="413" y="60" width="14" height="12" fill="#444"/>
+            <rect x="417.5" y="70" width="5" height="222" rx="2.5" fill="url(#ttMetal)"/>
+            <path d="M411 288 L429 288 L431 328 L409 328 Z" fill="#1b1b1b" stroke="#555"/>
+            <path d="M429 298 L442 292" stroke="#aaa" stroke-width="2" stroke-linecap="round"/>
+            <rect x="413" y="308" width="14" height="18" rx="1.5" fill="#7a0000" stroke="#2a0000"/>
+            <circle cx="420" cy="88" r="10" fill="url(#ttCap)" stroke="#222"/>
+          </g>
+        </g>
+      </svg>
+
+      <button class="tt-start" id="ttStart" type="button" aria-label="Start / Stop">START</button>
+      <button class="tt-rpm active" type="button" data-rpm="33.33" aria-label="33 Umdrehungen">33</button>
+      <button class="tt-rpm" type="button" data-rpm="45" aria-label="45 Umdrehungen">45</button>
+
+      <span class="tt-fader-label" aria-hidden="true">VOL</span>
+      <div class="tt-fader" id="ttFader" role="slider" tabindex="0"
+           aria-label="Lautstärke" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80">
+        <div class="tt-fader-knob" id="ttFaderKnob"></div>
+      </div>
+
+      <div class="tt-brand" aria-hidden="true">WILLY<span>'M</span> · DIRECT DRIVE</div>
+    </div>
+
+    <!-- DISPLAY + SOUNDCLOUD -->
+    <div class="tt-side">
+      <div class="tt-display">
+        <div class="tt-display-row">
+          <div class="tt-track" id="ttTrack">Willy'm — Frischer Wind / Friedasbude</div>
+          <div class="tt-status" id="ttStatus">■ STOP</div>
+        </div>
+        <div class="tt-progress" id="ttProgress" role="slider" tabindex="0"
+             aria-label="Position im Track" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="tt-progress-fill" id="ttProgressFill"></div>
+        </div>
+        <div class="tt-display-row tt-time">
+          <span id="ttTime">0:00</span>
+          <span id="ttDur">--:--</span>
+        </div>
+      </div>
+
+      <p class="tt-hint">Start drücken – oder die Nadel direkt in die Rillen setzen.</p>
+
+      <!-- SoundCloud Player (Mini) -->
+      <div class="sc-embed-wrap">
+        <iframe id="sc-iframe" allow="autoplay" title="SoundCloud Player"
+          width="100%" height="20" scrolling="no" frameborder="no"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/burak-ates-1/willym-frischer-wind-friedasbu&color=%237a0000&inverse=true&auto_play=false&show_user=true">
+        </iframe>
+      </div>
+
+      <a class="tt-sc-link" href="https://soundcloud.com/burak-ates-1" target="_blank" rel="noopener">Mehr auf SoundCloud →</a>
     </div>
 
   </div>
@@ -1187,84 +1250,187 @@
 
 <script src="https://w.soundcloud.com/player/api.js"></script>
 <script>
-  // ─── KASSETTENSPIELER ─────────────────────────────
-  const spoolL     = document.getElementById('spoolL');
-  const spoolR     = document.getElementById('spoolR');
-  const deckLed    = document.getElementById('deckLed');
-  const deckPlay   = document.getElementById('deckPlay');
-  const deckStop   = document.getElementById('deckStop');
-  const deckPrev   = document.getElementById('deckPrev');
-  const deckNext   = document.getElementById('deckNext');
-  const deckStatus = document.getElementById('deckStatus');
-  const deckTrack  = document.getElementById('deckTrackName');
-  const vuFills    = [d1,d2,d3,d4,d5,d6,d7,d8];
+  // ─── PLATTENSPIELER ───────────────────────────────
+  // LERNHINWEIS: Die Platte dreht per requestAnimationFrame – so kann sie
+  // wie ein echter Direktantrieb anlaufen und beim Stoppen langsam auslaufen.
+  const widget    = SC.Widget(document.getElementById('sc-iframe'));
+  const platter   = document.getElementById('ttPlatter');
+  const sheen     = document.getElementById('ttSheen');
+  const arm       = document.getElementById('ttArm');
+  const ttStart   = document.getElementById('ttStart');
+  const ttLight   = document.getElementById('ttLight');
+  const ttTrack   = document.getElementById('ttTrack');
+  const ttStatus  = document.getElementById('ttStatus');
+  const ttTime    = document.getElementById('ttTime');
+  const ttDur     = document.getElementById('ttDur');
+  const ttProg    = document.getElementById('ttProgress');
+  const ttFill    = document.getElementById('ttProgressFill');
+  const rpmBtns   = document.querySelectorAll('.tt-rpm');
 
-  const widget = SC.Widget(document.getElementById('sc-iframe'));
-  let playing  = false;
-  let vuTimer  = null;
+  // Geometrie im 500×360 Raster (gleiche Werte wie im CSS/SVG)
+  const CENTER = { x: 195, y: 180 };   // Mitte der Platte
+  const PIVOT  = { x: 420, y: 88 };    // Drehpunkt Tonarm
+  const ARM    = 238;                  // Drehpunkt → Nadel
+  const R_OUT  = 132;                  // erste Rille
+  const R_IN   = 56;                   // letzte Rille
+  const R_REC  = 137;                  // Plattenradius
+
+  let playing = false;
+  let rpm = 33.33;
+  let angle = 0, speed = 0, lastT = 0, rafId = null;
+  let duration = 0, position = 0;
+  let armSettling = false, armTimer = null;
+
+  // Welcher Tonarm-Winkel bringt die Nadel auf Radius r? (Bisektion)
+  function armAngleFor(r) {
+    let lo = 0, hi = 67;
+    for (let i = 0; i < 25; i++) {
+      const m = (lo + hi) / 2, t = m * Math.PI / 180;
+      const d = Math.hypot(PIVOT.x - ARM * Math.sin(t) - CENTER.x,
+                           PIVOT.y + ARM * Math.cos(t) - CENTER.y);
+      d > r ? lo = m : hi = m;
+    }
+    return (lo + hi) / 2;
+  }
+
+  const radiusFor = rel => R_OUT - Math.min(1, Math.max(0, rel)) * (R_OUT - R_IN);
+
+  function setArm(deg, slow) {
+    arm.style.transition = slow ? '' : 'transform 0.3s linear';
+    arm.style.transform = `rotate(${deg}deg)`;
+  }
+
+  function armToPosition(slow) {
+    const rel = duration ? position / duration : 0;
+    setArm(armAngleFor(radiusFor(rel)), slow);
+    if (slow) {
+      armSettling = true;
+      clearTimeout(armTimer);
+      armTimer = setTimeout(() => armSettling = false, 1200);
+    }
+  }
+
+  function spin(t) {
+    const dt = lastT ? Math.min(t - lastT, 50) : 16;
+    lastT = t;
+    const target = playing ? rpm * 360 / 60000 : 0;      // Grad pro ms
+    const tau = playing ? 350 : 900;                     // Anlauf schnell, Auslauf langsam
+    speed += (target - speed) * (1 - Math.exp(-dt / tau));
+    angle = (angle + speed * dt) % 360;
+    platter.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+    if (playing || speed > 0.0005) {
+      rafId = requestAnimationFrame(spin);
+    } else {
+      rafId = null; lastT = 0; speed = 0;
+    }
+  }
+
+  function fmt(ms) {
+    const s = Math.floor(ms / 1000);
+    const h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, sec = String(s % 60).padStart(2, '0');
+    return h ? `${h}:${String(m).padStart(2, '0')}:${sec}` : `${m}:${sec}`;
+  }
+
+  function showPosition() {
+    const rel = duration ? position / duration : 0;
+    ttFill.style.width = (rel * 100) + '%';
+    ttProg.setAttribute('aria-valuenow', Math.round(rel * 100));
+    ttTime.textContent = fmt(position);
+  }
 
   function setPlaying(s) {
+    if (playing === s) return;
     playing = s;
-    spoolL.classList.toggle('playing', s);
-    spoolR.classList.toggle('playing', s);
-    deckLed.classList.toggle('on', s);
-    deckPlay.innerHTML = s ? '&#9646;&#9646;' : '&#9654;';
-    deckStatus.textContent = s ? '&#9654; PLAY' : '&#9646;&#9646; STOP';
-    s ? startVU() : stopVU();
+    ttStart.classList.toggle('on', s);
+    ttStart.textContent = s ? 'STOP' : 'START';
+    ttLight.classList.toggle('on', s);
+    ttStatus.classList.toggle('on', s);
+    ttStatus.textContent = s ? '▶ PLAY' : '■ STOP';
+    if (s) armToPosition(true); else setArm(0, true);
+    if (!rafId) rafId = requestAnimationFrame(spin);
   }
 
-  function startVU() {
-    vuTimer = setInterval(() => {
-      vuFills.forEach(b => {
-        const h = 10 + Math.random() * 85;
-        b.style.height = h + '%';
-        b.style.background = h > 80 ? '#cc0000' : h > 55 ? '#c8a000' : '#c8c820';
-      });
-    }, 100);
+  function loadMeta() {
+    widget.getCurrentSound(s => { if (s && s.title) ttTrack.textContent = s.title; });
+    widget.getDuration(d => { if (d) { duration = d; ttDur.textContent = fmt(d); } });
   }
 
-  function stopVU() {
-    clearInterval(vuTimer);
-    vuFills.forEach(b => { b.style.height = '0%'; });
+  function seekRel(rel) {
+    if (!duration) return;
+    position = Math.min(1, Math.max(0, rel)) * duration;
+    widget.seekTo(position);
+    showPosition();
+    if (playing) armToPosition(true); else widget.play();
   }
 
-  widget.bind(SC.Widget.Events.READY, () => {
-    widget.getCurrentSound(s => { if (s) deckTrack.textContent = s.title; });
-  });
-  widget.bind(SC.Widget.Events.PLAY, () => {
-    setPlaying(true);
-    widget.getCurrentSound(s => { if (s) deckTrack.textContent = s.title; });
-  });
+  widget.bind(SC.Widget.Events.READY, () => { loadMeta(); widget.setVolume(volume); });
+  widget.bind(SC.Widget.Events.PLAY, () => { loadMeta(); setPlaying(true); });
   widget.bind(SC.Widget.Events.PAUSE, () => setPlaying(false));
-  widget.bind(SC.Widget.Events.FINISH, () => setPlaying(false));
-
-  deckPlay.addEventListener('click', () => widget.toggle());
-  deckStop.addEventListener('click', () => { widget.pause(); setPlaying(false); });
-  deckNext.addEventListener('click', () => widget.next());
-  deckPrev.addEventListener('click', () => widget.prev());
-
-  // Volume Fader
-  const volRail = document.getElementById('deckVolRail');
-  const volKnob = document.getElementById('deckVolKnob');
-  let drag = false;
-  volKnob.addEventListener('mousedown', e => { drag = true; e.preventDefault(); });
-  document.addEventListener('mousemove', e => {
-    if (!drag) return;
-    const r = volRail.getBoundingClientRect();
-    let y = Math.max(0, Math.min(r.height - 13, e.clientY - r.top - 6));
-    volKnob.style.top = y + 'px';
-    volKnob.style.transform = 'translateX(-50%)';
-    widget.setVolume(Math.round(100 - (y / (r.height - 13)) * 100));
+  widget.bind(SC.Widget.Events.FINISH, () => { position = 0; showPosition(); setPlaying(false); });
+  widget.bind(SC.Widget.Events.PLAY_PROGRESS, e => {
+    position = e.currentPosition;
+    showPosition();
+    if (playing && !armSettling) armToPosition(false);
   });
-  document.addEventListener('mouseup', () => drag = false);
-  volKnob.addEventListener('touchmove', e => {
-    e.preventDefault();
-    const r = volRail.getBoundingClientRect();
-    let y = Math.max(0, Math.min(r.height - 13, e.touches[0].clientY - r.top - 6));
-    volKnob.style.top = y + 'px';
-    volKnob.style.transform = 'translateX(-50%)';
-    widget.setVolume(Math.round(100 - (y / (r.height - 13)) * 100));
-  }, { passive: false });
+
+  ttStart.addEventListener('click', () => widget.toggle());
+
+  rpmBtns.forEach(b => b.addEventListener('click', () => {
+    rpm = parseFloat(b.dataset.rpm);
+    rpmBtns.forEach(x => x.classList.toggle('active', x === b));
+  }));
+
+  // Nadel aufsetzen: Klick in die Rillen → Abstand zur Mitte = Position im Track
+  sheen.addEventListener('click', e => {
+    const r = sheen.getBoundingClientRect();
+    const scale = R_REC / (r.width / 2);
+    const dist = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) * scale;
+    if (dist < R_IN - 4 || dist > R_OUT + 4) return;
+    seekRel((R_OUT - dist) / (R_OUT - R_IN));
+  });
+
+  // Fortschrittsbalken: Klick + Pfeiltasten
+  ttProg.addEventListener('click', e => {
+    const r = ttProg.getBoundingClientRect();
+    seekRel((e.clientX - r.left) / r.width);
+  });
+  ttProg.addEventListener('keydown', e => {
+    if (!duration) return;
+    const step = { ArrowRight: 30000, ArrowLeft: -30000 }[e.key];
+    if (step) { e.preventDefault(); seekRel((position + step) / duration); }
+  });
+
+  // Lautstärke-Fader (Maus, Touch und Tastatur über Pointer Events)
+  const fader = document.getElementById('ttFader');
+  const faderKnob = document.getElementById('ttFaderKnob');
+  let volume = 80;
+
+  function setVolume(v) {
+    volume = Math.round(Math.min(100, Math.max(0, v)));
+    faderKnob.style.top = (6 + (100 - volume) * 0.88) + '%';
+    fader.setAttribute('aria-valuenow', volume);
+    widget.setVolume(volume);
+  }
+
+  function faderFromPointer(e) {
+    const r = fader.getBoundingClientRect();
+    setVolume(100 - ((e.clientY - r.top) / r.height - 0.06) / 0.88 * 100);
+  }
+
+  fader.addEventListener('pointerdown', e => {
+    fader.setPointerCapture(e.pointerId);
+    faderFromPointer(e);
+  });
+  fader.addEventListener('pointermove', e => {
+    if (fader.hasPointerCapture(e.pointerId)) faderFromPointer(e);
+  });
+  fader.addEventListener('keydown', e => {
+    const step = { ArrowUp: 5, ArrowRight: 5, ArrowDown: -5, ArrowLeft: -5 }[e.key];
+    if (step) { e.preventDefault(); setVolume(volume + step); }
+  });
+
+  setVolume(volume);
+  setArm(0, true);
 
   // ─── BESUCHERZÄHLER ───────────────────────────────
   // LERNHINWEIS: fetch() ruft eine externe URL auf und bekommt Daten zurück.
